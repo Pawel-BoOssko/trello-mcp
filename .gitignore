@@ -1,0 +1,5 @@
+trello_credentials.json
+trello_mcp_secret.txt
+*.log
+__pycache__/
+venv/
