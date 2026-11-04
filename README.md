@@ -49,6 +49,10 @@ The secret is read from `TRELLO_MCP_SECRET` or a `trello_mcp_secret.txt` created
 
 Used daily against a live Trello workspace; tested against a mock API in both transports. No automated test suite in this repository yet.
 
+## Built with AI assistance
+
+This project was written with AI coding assistants and directed, tested and accepted by its author, who owns the design and the acceptance criteria.
+
 ## License
 
 MIT
