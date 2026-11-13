@@ -1,4 +1,4 @@
-﻿# Specyfikacja centralnej identyfikacji i synchronizacji czatów MCP
+# Specyfikacja centralnej identyfikacji i synchronizacji czatów MCP
 Data: 2026-11-13. Status: uzgodnione zasady do wdrożenia.
 
 ## Cel i pięć pól
@@ -79,3 +79,14 @@ Na SATANAMD: \`claude mcp get neo4j-identity\`, \`claude mcp list\`, test \`iden
 
 Kanoniczny kod i ograniczenia schematu są utrzymywane przez projekt \`chatgpt-identity-graph\`. Wersje tego pliku w repozytoriach MCP mają służyć jako instrukcja dla klienta. Nie wolno im wprowadzać konkurencyjnych lokalnych baz tożsamości. Wszystkie zmiany kodu należy testować przed wdrożeniem i zapisać w GitHub. Statusy zadania: do zrobienia / w trakcie / zrobione / zablokowane, niezależnie od miejsca zapisu kodu.
 
+## Aktualizacja 2026-11-13 ? Neo4j MCP wed?ug sprawdzonego wzorca LC MultiHost (wersja 0.2.0)
+
+Nowy bezpo?redni serwer MCP centralnej bazy Neo4j jest osi?galny na tym samym serwerze HTTPS/443 i wed?ug tego samego modelu capability-URL co LC MultiHost: `https://lupus-plugins.taila6d4ec.ts.net/neo4j-identity/mcp/<PRIVATE_CAPABILITY>`. Ko?cowa cz??? adresu stanowi tajny identyfikator dost?pu. **Nie wolno ujawnia?, kopiowa? do GitHub lub zapisywa? do log?w rzeczywistej warto?ci capability.** Nie nale?y ??da? od u?ytkownika osobnego klucza Bearer w konfiguracji ChatGPT.
+
+Wersja prywatnego pluginu ChatGPT `neo4j-chat-identity`: **0.2.0** (to samo ID `plugins_6af786844be081918230a518ab6feef7`). MCP jest wy??cznie odczytowe i udost?pnia pi?? narz?dzi: `identity_lookup`, `identity_search_chats`, `identity_describe_chat`, `identity_get_workdirs`, `identity_health`. Nie s?u?y do dowolnego Cypher, zmiany UUID ani nadpisywania powi?za?. Rejestracja i aktualizacja to?samo?ci nadal odbywa si? przez zweryfikowany serwer LC MultiHost lub centralne API.
+
+Po??czenie na publicznym HTTPS/443 przesz?o test inicjalizacji MCP, wykrywania pi?ciu narz?dzi i `identity_health` (protok?? MCP 2025-11-25). Sam fakt aktualizacji prywatnego pluginu nie jest jeszcze dowodem widoczno?ci jego narz?dzi w ka?dym ju? otwartym czacie ChatGPT. Test przez nowy czat czeka na mo?liwo?? u?ycia interfejsu.
+
+Kod ?r?d?owy: `D:\projects\chatgpt-identity-graph\mcp_identity_server.py`; instrukcja: `docs/NEO4J_MCP_DEPLOYMENT.md` w repozytorium centralnego rejestru. W GitHub zapisany jest wy??cznie szablon URL z placeholderem. Prywatn? paczk? przygotowuje `scripts/build_neo4j_mcp_plugin.py` na SATANAMD z lokalnego chronionego pliku; nie jest wersjonowana. Dla starszego Claude Code zachowano istniej?c? ?cie?k? Bearer jako zgodno?? wsteczn?.
+
+Przy aktualizacji routingu na istniej?cym porcie Tailscale Funnel `443` u?ywaj `tailscale funnel`, a nie `tailscale serve`. Drugie polecenie mo?e prze??czy? ca?y port 443 na prywatny Serve i chwilowo odci?? pozosta?e serwery MCP. Po zmianie sprawd? liczb? tras, dost?pno?? LC MultiHost i stan `AllowFunnel`.
