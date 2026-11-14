@@ -90,3 +90,19 @@ Po??czenie na publicznym HTTPS/443 przesz?o test inicjalizacji MCP, wykrywania p
 Kod ?r?d?owy: `D:\projects\chatgpt-identity-graph\mcp_identity_server.py`; instrukcja: `docs/NEO4J_MCP_DEPLOYMENT.md` w repozytorium centralnego rejestru. W GitHub zapisany jest wy??cznie szablon URL z placeholderem. Prywatn? paczk? przygotowuje `scripts/build_neo4j_mcp_plugin.py` na SATANAMD z lokalnego chronionego pliku; nie jest wersjonowana. Dla starszego Claude Code zachowano istniej?c? ?cie?k? Bearer jako zgodno?? wsteczn?.
 
 Przy aktualizacji routingu na istniej?cym porcie Tailscale Funnel `443` u?ywaj `tailscale funnel`, a nie `tailscale serve`. Drugie polecenie mo?e prze??czy? ca?y port 443 na prywatny Serve i chwilowo odci?? pozosta?e serwery MCP. Po zmianie sprawd? liczb? tras, dost?pno?? LC MultiHost i stan `AllowFunnel`.
+
+## Imeno: waznosc i nazwy w centralnym rejestrze (2026-11-14)
+
+**Imeno** jest nazwa aplikacji i serwera MCP; Neo4j pozostaje silnikiem danych, a repozytorium chatgpt-identity-graph zachowuje nazwe dla zgodnosci. Wersja prywatnego pluginu ChatGPT: 0.3.0 (nazwa widoczna Imeno); MCP udostepnia 8 narzedzi, w tym identity_get_profile, identity_list_profiles oraz identity_update_profile. Historyczne endpointy i identyfikatory klientow pozostaja zgodne.
+
+Wlasciwosci na istniejacym wezl e UUID (:Identity {kind:'UUID'}): imeno (autorska nazwa, bez zmiany UI_NAME) oraz important (null=nieustalone, 1=wazny, 0=niewazny). Automatyczny import z aktywnych statusow Nadzoru moze ustawic **wylacznie** important=1, gdy pole dotad jest NULL. Reczne 0 i 1 sa nadrzedne i nigdy nie sa nadpisywane. Kazda jawna edycja podnosi profile_revision; uzyj expected_revision aby zapobiec konfliktom.
+
+Czas ostatniej zmiany plikow jest zapisywany **raz na wspolny katalog**, nie osobno dla kazdego czatu: WorkingFolder. Pola: file_last_modified_at, file_scanned_at, file_change_detected_at, file_scan_status, file_count i file_scan_truncated. Mierzone sa tylko foldery waznych czatow. Skan obsluguje istniejacy ChatGPT-Identity-Sync co 5 min, bez nowego zadania. Wtyczka Firefox odczytuje Neo4j przez lokalny bridge; jej wczesniejszy osobny task skanowania zostal wylaczony. Nadzor zachowuje wlasny fingerprint do sterowania wybudzaniem.
+
+Interfejsy:
+- Firefox na SATANAMD: GET http://127.0.0.1:19431/api/imeno (bulk profile), GET /api/status (aktywnosc); nie wkladaj hasla Neo4j do rozszerzenia.
+- Zaufany backend na SATANAMD: uwierzytelniony GET/PATCH http://127.0.0.1:18765/v1/chats/{uuid}, GET /v1/chats?ids=..., POST /v1/chats/resolve. PATCH {"imeno":"Nazwa","important":1,"expected_revision":2}. 401 brak autoryzacji, 400 walidacja, 404 brak UUID, 409 rewizja, 503 niedostepnosc rejestru.
+- Czat ChatGPT/Claude: bezposredni MCP Imeno, identity_get_profile oraz identity_update_profile na wyrazne polecenie. Do sidebarowego bulk odczytu preferuj lokalny adapter zamiast MCP na kazda zakladke.
+- Bezposredni dostep Bolt Neo4j jest przeznaczony tylko dla autoryzowanych procesow serwerowych, nie dla przegladarki.
+
+Kanoniczna dokumentacja: https://github.com/Pawel-BoOssko/chatgpt-identity-graph/blob/main/docs/IMENO_INTEGRATION.md. Kod: chat_metadata.py, workdir_activity.py, identity_api.py, mcp_identity_server.py, sync_all.py. Nigdy nie kopiuj prywatnych tokenow ani pelnych URL capability do GitHub lub dokumentacji. Zmiana imeno nie jest tozsama z rename rozmowy w ChatGPT.
