@@ -25,3 +25,8 @@ Sprawdzaj błędy dotyczące projektu w rejestrze https://github.com/Pawel-BoOss
 
 To wyłącznie odnośniki do źródeł. Istniejące zasady projektu pozostają w mocy.
 <!-- KONIEC DOBRE-PRAKTYKI-FAULT-HARBOR-GPT6-20261113 -->
+
+
+<!-- IMENO-POLECENIE-PAWLA-MCP-2026-11-16 -->
+## Polecenie Pawła dla programisty MCP
+Przed zmianami w rejestracji lub synchronizacji danych/tożsamości czatów przez MCP przeczytaj [POLECENIE_PAWLA_IMENO_MCP.md](POLECENIE_PAWLA_IMENO_MCP.md). Najpierw uzgodnij migrację z Pawłem; nie zmieniaj samodzielnie działających serwerów.
